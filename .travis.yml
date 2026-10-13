@@ -1,9 +1,18 @@
 sudo: false
+dist: focal
 arch:
  - amd64
- - ppc64le
 language: node_js
 node_js:
+  - "22"
   - "10"
   - "12"
   - "14"
+script:
+  - NODE_MAJOR=$(node -e 'console.log(process.versions.node.split(".")[0])')
+  - |
+    if [ "$NODE_MAJOR" -ge 22 ]; then
+      npm test
+    else
+      node node_modules/.bin/tape $(ls test/*.js | grep -v '/redos\.js$')
+    fi
